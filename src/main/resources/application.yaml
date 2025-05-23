@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/brick-by-brick
+    username: recipe_user
+    password: user
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
