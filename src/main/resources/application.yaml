@@ -10,3 +10,4 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true
+#    default-property-inclusion: non_null #too aggressive - skips for admins
