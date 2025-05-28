@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
+@RequiredArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = false)
 @Table(
         name = "ingredient",
@@ -28,4 +29,11 @@ public class Ingredient {
 
     @Column(name = "category")
     private String category;
+
+    public Ingredient(int id, String name, int quantity, String category) {
+        this.id = id;
+        this.name = name;
+        this.quantity = quantity;
+        this.category = category;
+    }
 }

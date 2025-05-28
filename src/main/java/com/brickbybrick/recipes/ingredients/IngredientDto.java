@@ -7,6 +7,8 @@ import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class IngredientDto {
     @JsonView(Views.UserView.class)
     private Integer id;
@@ -22,7 +24,7 @@ public class IngredientDto {
     @JsonView(Views.AdminView.class)
     private String category;
 
-    // Getters and setters
+// Getters and setters
 //    public Integer getId() { return id; }
 //    public void setId(Integer id) { this.id = id; }
 //

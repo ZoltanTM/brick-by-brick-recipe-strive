@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         //.requestMatchers(HttpMethod.GET, "/ingredient").permitAll()
                         //.requestMatchers(HttpMethod.POST, "/ingredient").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/ingredient/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/ingredient/**").hasRole("ADMIN")//.authenticated()//
                         .anyRequest().permitAll()//.authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())

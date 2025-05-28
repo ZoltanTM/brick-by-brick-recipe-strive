@@ -12,4 +12,9 @@ public class IngredientSpecification {
         return (root, query, builder) ->
                 category == null ? null : builder.equal(root.get("category"), category);
     }
+
+    public static Specification<Ingredient> notSpecialCategory() {
+        return (root, query, builder) ->
+                builder.notEqual(root.get("category"), "Special");
+    }
 }
