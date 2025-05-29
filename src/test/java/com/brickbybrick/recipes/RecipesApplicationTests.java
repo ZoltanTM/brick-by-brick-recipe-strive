@@ -2,18 +2,15 @@ package com.brickbybrick.recipes;
 
 import com.brickbybrick.recipes.admin.SecurityService;
 import com.brickbybrick.recipes.ingredients.*;
-//import com.brickbybrick.recipes.SecurityTestConfig;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-//import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,7 +22,6 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -36,24 +32,12 @@ class RecipesApplicationTests {
 
     @Autowired
     @Qualifier("mockIngredientRepository")
-    //@Mock
     private IngredientRepository ingredientRepository;
-//    @Bean(name = "mockIngredientRepository")
-//    public IngredientRepository ingredientRepository() {
-//        return Mockito.mock(IngredientRepository.class);
-//    }
 
     @Autowired
     @Qualifier("mockIngredientMapper")
-//    @Mock
     private IngredientMapper ingredientMapper;
-//    @Bean(name = "mockIngredientMapper")
-//    public IngredientMapper ingredientMapper() {
-//        return Mockito.mock(IngredientMapper.class);
-//    }
 
-    //@Qualifier("mockSecurityService")
-//    @Mock //Autowired doesn't work
     @Autowired
     private SecurityService securityService;
 
@@ -137,21 +121,6 @@ class RecipesApplicationTests {
         // Mock SecurityService for unauthenticated or user role
         when(securityService.isCurrentUserAdmin()).thenReturn(false);
 
-        // Add specification mocks
-        //Version when I had simulated 2 ingredients, 1 public, one private
-//        when(ingredientRepository.findAll(any(Specification.class)))
-//                .thenAnswer(invocation -> {
-//                    Specification<Ingredient> spec = invocation.getArgument(0);
-//                    // Simulate specification logic
-//                    if (!spec.toString().contains("category=special")) {
-//                        return List.of(publicIngredient);
-//                    }
-//                    // For non-admins, exclude "special" category
-//                    if (!securityService.isCurrentUserAdmin()) {
-//                        return List.of(publicIngredient);
-//                    }
-//                    return List.of(publicIngredient, privateIngredient);
-//                });
         // Mock findAll with Specification
         when(ingredientRepository.findAll(any(Specification.class)))
                 .thenAnswer(invocation -> {

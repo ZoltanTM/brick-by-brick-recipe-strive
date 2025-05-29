@@ -1,27 +1,20 @@
 package com.brickbybrick.recipes.ingredients;
 
-import com.brickbybrick.recipes.admin.RoleChecker;
 import com.brickbybrick.recipes.admin.SecurityService;
 import com.brickbybrick.recipes.admin.Views;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.springframework.web.util.UriComponentsBuilder;
-
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.List;
 
 //@PreAuthorize("hasRole('ADMIN')")
 @RestController
+@SecurityRequirement(name = "basicAuth") //For Swagger
 public class IngredientController {
     private final IngredientRepository ingredientRepository;
     private final IngredientMapper ingredientMapper;
@@ -54,14 +47,6 @@ public class IngredientController {
 
     @GetMapping("/ingredient/{id}")//at first, didn't have ingredient
     public ResponseEntity<MappingJacksonValue> getIngredient(@PathVariable Integer id) {//IngredientDto //Long
-//        return ingredientRepository.findById(id)
-//                .map(ingredient -> ResponseEntity.ok(ingredientMapper.toDto(ingredient)))
-//                .orElse(ResponseEntity.notFound().build());
-        //v2
-//        IngredientDto ingredientDto = ingredientService.getIngredientById(id);
-//        return ResponseEntity.ok(ingredientDto);
-        //v3
-//        MappingJacksonValue wrapper = ingredientService.getIngredient(Long.valueOf(id));
         IngredientDto ingredientDto = ingredientService.getIngredientById(id);
 
         Class<?> view = securityService.isCurrentUserAdmin()
