@@ -11,6 +11,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -68,6 +69,11 @@ public class RecipeService {
         return recipeMapper.toDto(saved);
     }
 
+    public Recipe getRecipeById(Integer id) {
+        return recipeRepository.findById(id)
+                .orElseThrow(() -> new RecipeNotFoundException("Recipe not found with id " + id));
+    }
+
     public RecipeDto updateRecipe(Integer id, RecipeDto recipeDto) {
         Recipe recipe = recipeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Recipe not found with id " + id));
@@ -101,8 +107,32 @@ public class RecipeService {
         return recipeMapper.toDto(updated);
     }
 
-    public void deleteRecipe(Integer id) {
-        recipeRepository.deleteById(id);
+//    public void deleteRecipe(Integer id) {
+//        recipeRepository.deleteById(id);
+//    }
+
+    public List<Recipe> findRecipesWithFilters(List<String> ingredientNames, Integer maxPrepTime, Integer maxCookTime) {
+        return recipeRepository.findWithFilters(ingredientNames, maxPrepTime, maxCookTime);
+    }
+
+    @Transactional
+    public void deleteRecipeById(Integer id) {
+        Recipe recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new RecipeNotFoundException("Recipe not found"));
+        recipe.getRecipeIngredients().clear();
+        recipeRepository.delete(recipe);
+    }
+
+    @Transactional
+    public void removeIngredientFromRecipe(Integer recipeId, Integer ingredientId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new EntityNotFoundException("Recipe not found"));
+
+        recipe.getRecipeIngredients().removeIf(ri ->
+                ri.getIngredient().getId() == ingredientId//.equals(ingredientId)
+        );
+
+        recipeRepository.save(recipe);
     }
 }
 

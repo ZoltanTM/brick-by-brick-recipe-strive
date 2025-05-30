@@ -12,13 +12,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecipeDto {
-    private Long id;
+    private Integer id;
     private String name;
     private String description;
     private Integer prepTimeMinutes;
     private Integer cookTimeMinutes;
+    private Integer totalTimeMinutes;
 //    private List<Integer> ingredientIds;
 //    private List<String> ingredientNames;
 
     private List<IngredientQuantityDto> ingredients;
+
+    public void setTotalTimeMinutes(int i) {
+    }
 }

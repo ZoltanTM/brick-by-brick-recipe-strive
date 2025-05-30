@@ -25,7 +25,7 @@ import java.util.Set;
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @NotBlank(message = "Name is required")
     @Column(nullable = false, unique = true)
@@ -39,13 +39,13 @@ public class Recipe {
     @Column(name = "cook_time_minutes")
     private Integer cookTimeMinutes;
 
-    @ManyToMany
-    @JoinTable(
-            name = "recipe_ingredients",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
-    )
-    private Set<Ingredient> ingredients = new HashSet<>();
+//    @ManyToMany
+//    @JoinTable(
+//            name = "recipe_ingredients",
+//            joinColumns = @JoinColumn(name = "recipe_id"),
+//            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
+//    )
+//    private Set<Ingredient> ingredients = new HashSet<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<RecipeIngredient> recipeIngredients = new HashSet<>();
@@ -56,12 +56,23 @@ public class Recipe {
                 + (cookTimeMinutes != null ? cookTimeMinutes : 0);
     }
 
-    public Recipe(Long id, String name, String description, Integer prepTimeMinutes, Integer cookTimeMinutes, HashSet<Ingredient> ingredients) {
+    public Recipe(Integer id, String name, String description, Integer prepTimeMinutes, Integer cookTimeMinutes, HashSet<Ingredient> ingredients) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.prepTimeMinutes = prepTimeMinutes;
         this.cookTimeMinutes = cookTimeMinutes;
-        this.ingredients = ingredients;
+        //this.ingredients = ingredients;
+    }
+
+    public void removeIngredient(RecipeIngredient recipeIngredient) {
+        recipeIngredients.remove(recipeIngredient);
+        recipeIngredient.setRecipe(null);
+    }
+
+    public void clearIngredients() {
+        for (RecipeIngredient ri : new HashSet<>(recipeIngredients)) {
+            removeIngredient(ri);
+        }
     }
 }

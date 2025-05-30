@@ -1,32 +1,41 @@
 package com.brickbybrick.recipes.recipes;
 
-import com.brickbybrick.recipes.admin.SecurityService;
-import com.brickbybrick.recipes.admin.Views;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import jakarta.persistence.*;
-import jakarta.validation.Valid;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 //@RequestMapping("/recipes")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class RecipeController {
 
     private final RecipeService recipeService;
+    private final RecipeMapper recipeMapper;
+
+    public RecipeController(RecipeService recipeService, RecipeMapper recipeMapper) {
+        this.recipeService = recipeService;
+        this.recipeMapper = recipeMapper;
+    }
 
     @GetMapping("/recipe")
     public List<RecipeDto> listRecipes(
-            @RequestParam(required = false) List<Integer> ingredientIds,
+            @RequestParam(required = false) List<String> ingredientNames,
+            //@RequestParam(required = false) List<Integer> ingredientIds,
             @RequestParam(required = false) Integer maxPrepTime,
             @RequestParam(required = false) Integer maxCookTime
     ) {
-        return recipeService.findRecipes(ingredientIds, maxPrepTime, maxCookTime);
+        //return recipeService.findRecipes(ingredientIds, maxPrepTime, maxCookTime);
+        List<Recipe> recipes = recipeService.findRecipesWithFilters(ingredientNames, maxPrepTime, maxCookTime);
+        return recipes.stream().map(recipeMapper::toDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/recipe/{id}")
+    public RecipeDto getRecipeById(@PathVariable Integer id) {
+        Recipe recipe = recipeService.getRecipeById(id);
+        return recipeMapper.toDto(recipe);
     }
 
     @PostMapping("/recipe")
@@ -40,8 +49,11 @@ public class RecipeController {
     }
 
     @DeleteMapping("/recipe/{id}")
-    public void deleteRecipe(@PathVariable Integer id) {
-        recipeService.deleteRecipe(id);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Object> deleteRecipe(@PathVariable Integer id) {
+        recipeService.deleteRecipeById(id);
+        return ResponseEntity.noContent().build();
+        //recipeService.deleteRecipe(id);
     }
 }
 

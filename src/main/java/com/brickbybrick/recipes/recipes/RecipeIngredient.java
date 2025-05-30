@@ -24,6 +24,4 @@ public class RecipeIngredient {
     private Ingredient ingredient;
 
     private String quantity;
-
-
 }
